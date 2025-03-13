@@ -24,21 +24,13 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 17 ]
-        spring-boot-version: [ 3.0.13 ]
-        spring-boot-display-version: [ 3.0.x ]
+        spring-boot-version: [  3.4.3 ]
+        spring-boot-display-version: [ 3.4.x ]
         experimental: [ false ]
         include:
           - java: 17
-            spring-boot-version: 2.7.18
-            spring-boot-display-version: 2.7.x
-            experimental: false
-          - java: 17
-            spring-boot-version: 2.6.14
-            spring-boot-display-version: 2.6.x
-            experimental: false
-          - java: 17
-            spring-boot-version: 2.5.7
-            spring-boot-display-version: 2.5.x
+            spring-boot-version: 3.3.9
+            spring-boot-display-version: 3.3.x
             experimental: false
     env:
       GOVER: "1.20"
@@ -46,9 +38,9 @@ jobs:
       GOARCH: amd64
       GOPROXY: https://proxy.golang.org
       JDK_VER: ${{ matrix.java }}
-      DAPR_CLI_VER: 1.12.0
-      DAPR_RUNTIME_VER: 1.13.0-rc.2
-      DAPR_INSTALL_URL: https://raw.githubusercontent.com/dapr/cli/v1.12.0/install/install.sh
+      DAPR_CLI_VER: 1.14.0
+      DAPR_RUNTIME_VER: 1.14.4
+      DAPR_INSTALL_URL: https://raw.githubusercontent.com/dapr/cli/v1.14.0/install/install.sh
       DAPR_CLI_REF:
       DAPR_REF:
       TOXIPROXY_URL: https://github.com/Shopify/toxiproxy/releases/download/v2.5.0/toxiproxy-server-linux-amd64
@@ -57,7 +49,7 @@ jobs:
     - name: Set up OpenJDK ${{ env.JDK_VER }}
       uses: actions/setup-java@v4
       with:
-        distribution: 'adopt'
+        distribution: 'temurin'
         java-version: ${{ env.JDK_VER }}
     - name: Set up Dapr CLI
       run: wget -q ${{ env.DAPR_INSTALL_URL }} -O - | /bin/bash -s ${{ env.DAPR_CLI_VER }}
@@ -107,7 +99,7 @@ jobs:
         ./dist/linux_amd64/release/placement &
     - name: Spin local environment
       run: |
-        docker-compose -f ./sdk-tests/deploy/local-test.yml up -d mongo kafka
+        docker compose -f ./sdk-tests/deploy/local-test.yml up -d mongo kafka
         docker ps
     - name: Install local ToxiProxy to simulate connectivity issues to Dapr sidecar
       run: |
@@ -127,7 +119,7 @@ jobs:
       run: ./mvnw install -q -B -DskipTests
     - name: Integration tests using spring boot version ${{ matrix.spring-boot-version }}
       id: integration_tests
-      run: PRODUCT_SPRING_BOOT_VERSION=${{ matrix.spring-boot-version }} ./mvnw -B -f sdk-tests/pom.xml verify
+      run: PRODUCT_SPRING_BOOT_VERSION=${{ matrix.spring-boot-version }} ./mvnw -B -Pintegration-tests verify
     - name: Upload test report for sdk
       uses: actions/upload-artifact@v4
       with:
@@ -166,7 +158,7 @@ jobs:
       - name: Set up OpenJDK ${{ env.JDK_VER }}
         uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: ${{ env.JDK_VER }}
       - name: Get pom parent version
         run: |
@@ -189,4 +181,4 @@ jobs:
           echo ${{ secrets.GPG_PRIVATE_KEY }} | base64 -d > private-key.gpg
           export GPG_TTY=$(tty)
           gpg --batch --import private-key.gpg
-          ./mvnw -V -B -Dgpg.skip=false -s settings.xml deploy -pl \!examples
+          ./mvnw -V -B -Dgpg.skip=false -s settings.xml deploy

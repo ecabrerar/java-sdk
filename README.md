@@ -1,11 +1,6 @@
 # Dapr SDK for Java
 
-[![Build Status](https://github.com/dapr/java-sdk/workflows/Build/badge.svg?event=push&branch=master)](https://github.com/dapr/java-sdk/actions?workflow=Build)
-[![Discord](https://img.shields.io/discord/778680217417809931)](https://discord.com/channels/778680217417809931/778749797242765342) 
-[![codecov](https://codecov.io/gh/dapr/java-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/dapr/java-sdk)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B162%2Fgithub.com%2Fdapr%2Fjava-sdk.svg?type=shield)](https://app.fossa.com/projects/custom%2B162%2Fgithub.com%2Fdapr%2Fjava-sdk?ref=badge_shield)
-[![Maven Central](https://img.shields.io/maven-central/v/io.dapr/dapr-sdk.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.dapr%22%20AND%20a:%22dapr-sdk%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.dapr/dapr-sdk.svg?label=Maven%20Central&style=flat)](https://central.sonatype.com/artifact/io.dapr/dapr-sdk) [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/dapr/java-sdk/.github%2Fworkflows%2Fbuild.yml?branch=master&label=Build&logo=github)](https://github.com/dapr/java-sdk/actions/workflows/build.yml) [![codecov](https://codecov.io/gh/dapr/java-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/dapr/java-sdk) [![GitHub License](https://img.shields.io/github/license/dapr/java-sdk?style=flat&label=License&logo=github)](https://github.com/dapr/java-sdk/blob/master/LICENSE) [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B162%2Fgithub.com%2Fdapr%2Fjava-sdk.svg?type=shield)](https://app.fossa.com/projects/custom%2B162%2Fgithub.com%2Fdapr%2Fjava-sdk?ref=badge_shield) [![GitHub issue custom search in repo](https://img.shields.io/github/issues-search/dapr/java-sdk?query=type%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22&label=Good%20first%20issues&style=flat&logo=github)](https://github.com/dapr/java-sdk/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) [![Discord](https://img.shields.io/discord/778680217417809931?label=Discord&style=flat&logo=discord)](http://bit.ly/dapr-discord) [![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCtpSQ9BLB_3EXdWAUQYwnRA?style=flat&label=YouTube%20views&logo=youtube)](https://youtube.com/@daprdev) [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/daprdev?logo=x&style=flat)](https://twitter.com/daprdev)
 
 This is the Dapr SDK for Java, including the following features:
 
@@ -14,6 +9,7 @@ This is the Dapr SDK for Java, including the following features:
 * Binding
 * State Store
 * Actors
+* Workflows
 
 ## Getting Started
 
@@ -54,19 +50,19 @@ For a Maven project, add the following to your `pom.xml` file:
     <dependency>
       <groupId>io.dapr</groupId>
       <artifactId>dapr-sdk</artifactId>
-      <version>1.11.0</version>
+      <version>1.13.1</version>
     </dependency>
     <!-- Dapr's SDK for Actors (optional). -->
     <dependency>
       <groupId>io.dapr</groupId>
       <artifactId>dapr-sdk-actors</artifactId>
-      <version>1.11.0</version>
+      <version>1.13.1</version>
     </dependency>
     <!-- Dapr's SDK integration with SpringBoot (optional). -->
     <dependency>
       <groupId>io.dapr</groupId>
       <artifactId>dapr-sdk-springboot</artifactId>
-      <version>1.11.0</version>
+      <version>1.13.1</version>
     </dependency>
     ...
   </dependencies>
@@ -80,11 +76,11 @@ For a Gradle project, add the following to your `build.gradle` file:
 dependencies {
 ...
     // Dapr's core SDK with all features, except Actors.
-    compile('io.dapr:dapr-sdk:1.11.0')
+    compile('io.dapr:dapr-sdk:1.13.1')
     // Dapr's SDK for Actors (optional).
-    compile('io.dapr:dapr-sdk-actors:1.11.0')
+    compile('io.dapr:dapr-sdk-actors:1.13.1')
     // Dapr's SDK integration with SpringBoot (optional).
-    compile('io.dapr:dapr-sdk-springboot:1.11.0')
+    compile('io.dapr:dapr-sdk-springboot:1.13.1')
 }
 ```
 
@@ -107,12 +103,22 @@ Try the following examples to learn more about Dapr's Java SDK:
 * [Invoking a Grpc service](./examples/src/main/java/io/dapr/examples/invoke/grpc)
 * [State management](./examples/src/main/java/io/dapr/examples/state)
 * [PubSub with subscriber](./examples/src/main/java/io/dapr/examples/pubsub/)
+* [PubSub with streaming subscription](./examples/src/main/java/io/dapr/examples/pubsub/stream/)
 * [Binding with input over Http](./examples/src/main/java/io/dapr/examples/bindings/http)
 * [Actors](./examples/src/main/java/io/dapr/examples/actors/)
+* [Workflows](./examples/src/main/java/io/dapr/examples/workflows/)
 * [Secrets management](./examples/src/main/java/io/dapr/examples/secrets)
+* [Configuration](./examples/src/main/java/io/dapr/examples/configuration)
 * [Distributed tracing with OpenTelemetry SDK](./examples/src/main/java/io/dapr/examples/tracing)
 * [Exception handling](./examples/src/main/java/io/dapr/examples/exception)
 * [Unit testing](./examples/src/main/java/io/dapr/examples/unittesting)
+
+### Running Spring Boot examples
+
+The Spring Boot integration for Dapr use [Testcontainers](https://testcontainers.com) to set up a local environment development flow that doesn't 
+require the use of the `dapr` CLI and it integrates with the Spring Boot programming model. 
+
+You can find a [step-by-step tutorial showing this integration here](./spring-boot-examples/README.md).
 
 ### API Documentation
 
@@ -241,13 +247,13 @@ Similarly, all of these need to be run for running the ITs either individually o
 Run the following commands from the root of the repo to start all the docker containers that the tests depend on.
 
 ```bash
-docker-compose -f ./sdk-tests/deploy/local-test.yml up -d
+docker compose -f ./sdk-tests/deploy/local-test.yml up -d
 ```
 
 To stop the containers and services, run the following commands.
 
 ```bash
-docker-compose -f ./sdk-tests/deploy/local-test.yml down
+docker compose -f ./sdk-tests/deploy/local-test.yml down
 ```
 
 
